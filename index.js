@@ -1,7 +1,8 @@
 const AWS = require('aws-sdk')
 const csv = require('@fast-csv/parse')
-const parseRecord = require('./helpers/parseRecord.js')
+const parseRecord = require('./utils/parseRecord.js')
 const crud = require('./crud.js')
+
 const s3 = new AWS.S3()
 
 const main = async (event) => {
@@ -19,17 +20,17 @@ const main = async (event) => {
 
     return await new Promise( (resolve, reject) => {
         
-        const result = []
+        const orderList = []
 
-        const parser = csv.parseStream(csvFile, { headers: ['id', 'date', 'email', 'orderLine'] })
-        .on("data", function (data) {
-
-            const order = parseRecord(data);
-            //console.log(order);
-            crud.sendOrder(order);
-            //console.log(Response);
+        const parser = csv.parseStream(csvFile2, { headers: ['id', 'date', 'email', 'orderLine'] })
+        .on("data", (data) => {
+            orderList.push( parseRecord(row))
         })
         .on("end", function () {
+
+            // Sends records to the API
+            crud.sendOrder(records)
+
             resolve('csv parse process finished')
         })
         .on("error", function () {

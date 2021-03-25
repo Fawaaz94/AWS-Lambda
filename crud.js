@@ -6,7 +6,7 @@ const sendOrder = async (order) => {
         console.log(`statusCode: ${res.statusCode}`)
     })
     .catch(err => {
-        console.error(error)
+        console.error(err)
     })
 }
 
