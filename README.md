@@ -16,9 +16,9 @@ node index.js
 
 ## ZIP
 
-Run the command below to zip into the "dist" folder, the zip file can then be uploaded to the AWS Lambda function
+Run the command below to zip everything in the project. Then upload the zip file into the AWS Lambda function
 
 ```bash
-npm run zip
+zip -r deploy.zip ./ 
 ```
 
