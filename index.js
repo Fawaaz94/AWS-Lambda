@@ -1,30 +1,9 @@
 const AWS = require('aws-sdk')
 const csv = require('@fast-csv/parse')
-
-const parseRecord = require('./utils/parseRecord.js')
-const crud = require('./crud.js')
+const {parseRecord} = require('./utils/parseRecord.js')
+const crud = require('./service/crud.js')
 
 const s3 = new AWS.S3()
-
-// For local testing
-// const fs = require('fs');
-
-// const records = []
-
-// fs.createReadStream('output-100.csv')
-// .pipe(csv.parse({headers: ['id', 'date', 'email', 'orderLine']}))
-// .on('error', error => console.error(error))
-// .on('data', row => {
-//     records.push( parseRecord(row))
-// })
-// .on('end', rowCount => {
-//     console.log(`Parsed ${rowCount} rows:`)
-//     console.log("*************************************")
-//     if(crud.sendOrderList(records)){
-//         console.log("Success")
-//     }
-        
-// });
 
 const main = async (event) => {
     
@@ -37,26 +16,25 @@ const main = async (event) => {
         Key: file
     }
 
+    // Gets the CSV file from the S3 bucket
     const csvFile = s3.getObject(params).createReadStream();
 
     return await new Promise( (resolve, reject) => {
         
-        const orderList = []
+        let orderList = []
 
         const parser = csv.parseStream(csvFile, { headers: ['id', 'date', 'email', 'orderLine'] })
         .on("data", row => {
-            orderList.push( parseRecord(row) )
+            // Reads the csv file row by row, and pushes to the array
+
+            orderList.push(parseRecord(row))
         })
         .on("end", rowCount => {
-
-            console.log(`Parsed ${rowCount} rows:`)
-
-            // Sends records to the API
-            if(crud.sendOrderList(orderList)){
-                console.log("Success")
-            }
+            // Reads the csv file at the end
             
-            resolve('csv parse process finished')
+            console.log(`Parsed ${rowCount} rows`)
+        
+            crud.putOrderList(orderList);
         })
         .on("error", () => {
             reject('csv parse process failed')
@@ -64,6 +42,24 @@ const main = async (event) => {
     })
     
 }
+
+/* For local testing - uncomment and run */
+// const fs = require('fs');
+
+// let records = []
+
+// fs.createReadStream('./csv/output-100.csv')
+// .pipe(csv.parse({headers: ['id', 'date', 'email', 'orderLine']}))
+// .on('error', error => console.error(error))
+// .on('data', row => {
+//     records.push( parseRecord(row))
+// })
+// .on('end', rowCount => {
+//     console.log(`Parsed ${rowCount} rows:`)
+//     console.log("****************")
+    
+//     crud.putOrderList(records);
+// });
 
 exports.handler = main
 

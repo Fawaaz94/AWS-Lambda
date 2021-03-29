@@ -1,11 +1,13 @@
 {
   "name": "fyayc",
   "version": "1.0.0",
-  "description": "",
+  "description": "A simple lambda function for reading a CSV, parsing it then sending to an API",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "zip": "zip -r deploy.zip ./"
+    "zip": "zip -r deploy.zip ./",
+    "upload": "aws lambda update-function-code --function-name fyayc --zip-file fileb://deploy.zip",
+    "dev": "node index.js"
   },
   "keywords": [],
   "author": "",

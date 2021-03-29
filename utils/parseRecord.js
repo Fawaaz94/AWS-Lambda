@@ -1,17 +1,17 @@
-const dateConversion = require('./dateConversion.js')
+const {dateConversion} = require('./dateConversion.js')
 
-module.exports = function (data) {
+parseRecord = (data) => {
 
-    var total = 0;
+    let total = 0;
     const orderLines = []
 
-    const orderLineSplitColon = data.orderLine.split(/[;]/) 
+    const orderLineSplitColon = data.orderLine.split(';') 
     orderLineSplitColon.pop() 
    
-    orderLineSplitColon.forEach( element => {
+    orderLineSplitColon.forEach( section => {
 
-        const orderLineSplitLine = element.split('|') 
-
+        const orderLineSplitLine = section.split('|') 
+        
         const orderLineObject = {
             productCode: orderLineSplitLine[0],
             value: parseFloat(orderLineSplitLine[1])
@@ -25,7 +25,7 @@ module.exports = function (data) {
     const order = {
         id: data.id,
         email: data.email,
-        orderDate: dateConversion.dateConversion(data.date),
+        orderDate: dateConversion(data.date),
         total: parseFloat(total.toFixed(2)),
         orderLines: orderLines
     }
@@ -33,3 +33,6 @@ module.exports = function (data) {
     return order;
 } 
 
+module.exports = {
+    parseRecord
+}
