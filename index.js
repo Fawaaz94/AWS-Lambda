@@ -1,7 +1,7 @@
 const AWS = require('aws-sdk')
 const csv = require('@fast-csv/parse')
 const {parseRecord} = require('./utils/parseRecord.js')
-const crud = require('./service/crud.js')
+const {putRequest} = require('./service/putRequest.js')
 
 const s3 = new AWS.S3()
 
@@ -34,7 +34,7 @@ const main = async (event) => {
             
             console.log(`Parsed ${rowCount} rows`)
         
-            crud.putOrderList(orderList);
+            putRequest(orderList)
         })
         .on("error", () => {
             reject('csv parse process failed')
@@ -48,7 +48,7 @@ const main = async (event) => {
 
 // let records = []
 
-// fs.createReadStream('./csv/output-100.csv')
+// fs.createReadStream('./csv/output-100000.csv')
 // .pipe(csv.parse({headers: ['id', 'date', 'email', 'orderLine']}))
 // .on('error', error => console.error(error))
 // .on('data', row => {
@@ -56,10 +56,9 @@ const main = async (event) => {
 // })
 // .on('end', rowCount => {
 //     console.log(`Parsed ${rowCount} rows:`)
-//     console.log("****************")
-    
-//     crud.putOrderList(records);
+
+//     putRequest(records)
+
 // });
 
 exports.handler = main
-

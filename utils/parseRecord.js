@@ -3,6 +3,8 @@ const {dateConversion} = require('./dateConversion.js')
 parseRecord = (data) => {
 
     let total = 0;
+
+    // Create orderLine opbject 
     const orderLines = []
 
     const orderLineSplitColon = data.orderLine.split(';') 
@@ -22,6 +24,7 @@ parseRecord = (data) => {
         total += parseFloat(orderLineSplitLine[1])
     });
 
+    // Final order object
     const order = {
         id: data.id,
         email: data.email,
