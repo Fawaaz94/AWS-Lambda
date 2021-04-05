@@ -1,4 +1,4 @@
-# foryouandyourcustomers
+# AWS Lambda App
 		
 This nodejs application is a AWS lambda function. It pulls the latest CSV file from a S3 bucket, parses it and sends it to an API.
 
